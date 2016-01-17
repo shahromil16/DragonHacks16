@@ -1,6 +1,6 @@
-function [fall,reel1,reel2,reel3,reel4,reel5,n] = Main
+function [fall,type,reel1,reel2,reel3,reel4,reel5,n] = Main
 
-clear fall reel1 reel2 reel3 reel4 reel5
+clear type reel1 reel2 reel3 reel4 reel5
 clc
 format long
 delete('*.csv');
@@ -76,22 +76,33 @@ while trin<totals
 
     end
     
-    fall = 0;
+    type = 0;
     
     [wid,len]=size(reel1);
     for i=1:intervals/5:wid-intervals/5
         data1 = reel1(i:i+intervals/5,4);
         data2 = reel4(i:i+intervals/5,5);
-        data3 = reel5(i:i+intervals/5,3);
+        data3 = reel5(i:i+intervals/5,2);
+        data4 = reel1(i:i+intervals/5,3);
+        data5 = reel5(i:i+intervals/5,3);
         if abs((abs(max(data1))-abs(min(data1)))>0.5) || abs((abs(max(data2))-abs(min(data2))>10)) || abs((abs(max(data3))-abs(min(data3)))>5)
-            %if (find(data1==max(data1))>find(data1==min(data1)))
-                    send_text_message('857-919-7147','tmobile','Alert','Fall Detected');
-                    fall = 1;
-            %end
-        end  
-    end
+            send_text_message('857-919-7147','tmobile','Alert','type Detected');
+            type = 1;
+            fall = 1;
+        elseif abs((abs(max(data4))-abs(min(data4)))>0) && abs((abs(max(data3))-abs(min(data3)))<1)
+            type = 4;
+            fall = 0;
+        elseif abs((abs(max(data4))-abs(min(data4)))>3) && abs((abs(max(data5))-abs(min(data5)))>1)
+            type = 2;
+            fall = 0;
+        else
+            type = 3;
+            fall = 0;
+        end
     
-%     if fall == 1
+    end   
+    
+%     if type == 1
 %         for i=1:5
 %             if i==1
 %                 realdata = reel1;

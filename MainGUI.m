@@ -22,7 +22,7 @@ function varargout = MainGUI(varargin)
 
 % Edit the above text to modify the response to help MainGUI
 
-% Last Modified by GUIDE v2.5 17-Jan-2016 07:28:52
+% Last Modified by GUIDE v2.5 17-Jan-2016 13:03:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,25 +79,29 @@ function pushbutton1_Callback(~, ~, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global fall reel1 reel2 reel3 reel4 reel5 sets n rad1 rad2 rad3 rad4
-[fall,reel1,reel2,reel3,reel4,reel5,n] = Main;
+global fall type reel1 reel2 reel3 reel4 reel5 sets n
+[fall,type,reel1,reel2,reel3,reel4,reel5,n] = Main;
 sets = 1;
 
-if rad4 == 1
+if type == 1
     if fall == 1
         set(handles.edit1,'String','Fall Detected');
     else
         set(handles.edit1,'String','No Fall Detected');
     end
-elseif rad3 == 1
-    pks = findpeaks(reel2(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
-elseif rad2 == 1
-    pks = findpeaks(reel5(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
+    set(handles.edit2,'String','---X---');
+elseif type == 2
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Pushups: ',num2str(round(length(pks)/10))));
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*85)));
+elseif type == 3
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Dumbbells: ',num2str(round(length(pks)/10))));
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*15)));
 else
-    pks = findpeaks(reel3(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Crunches: ',num2str(round(length(pks)/10))));
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*51)));
 end
 
 grid on
@@ -169,23 +173,23 @@ function edit1_Callback(~, ~, handles)
 
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
-global sets rad1 rad2 rad3 rad4 reel2 reel5 reel3
+global sets type reel1
 
-if rad4 == 1
+if type == 1
     if sets == 1
         set(handles.edit1,'String','Fall Detected');
     else
         set(handles.edit1,'String','No Fall Detected');
     end
-elseif rad3 == 1
-    pks = findpeaks(reel2(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
-elseif rad2 == 1
-    pks = findpeaks(reel5(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
+elseif type == 2
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Pushups: ',num2str(round(length(pks)/10))));
+elseif type == 3
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Dumbbells: ',num2str(round(length(pks)/10))));
 else
-    pks = findpeaks(reel3(:,4));
-    set(handles.edit1,'String',num2str(round(length(pks)/10)));
+    pks = findpeaks(reel1(:,3));
+    set(handles.edit1,'String',strcat('Crunches: ',num2str(round(length(pks)/10))));
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -200,46 +204,35 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function radiobutton1_Callback(hObject, ~, ~)
-% hObject    handle to radiobutton1 (see GCBO)
+
+
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of radiobutton1
-global rad1
-if (get(hObject,'Value') == get(hObject,'Max'))
-	rad1 = 1;
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+global type
+
+if type == 2
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*85)));
+elseif type == 3
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*15)));
+elseif type == 4
+    set(handles.edit2,'String',strcat('Calories Burnt: ',num2str(round(length(pks)/10)*51)));
+else
+    set(handles.edit2,'String','---X---');
 end
 
-function radiobutton2_Callback(hObject, ~, ~)
-% hObject    handle to radiobutton1 (see GCBO)
+% --- Executes during object creation, after setting all properties.
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: get(hObject,'Value') returns toggle state of radiobutton1
-global rad2
-if (get(hObject,'Value') == get(hObject,'Max'))
-	rad2 = 1;
-end
-
-function radiobutton3_Callback(hObject, ~, ~)
-% hObject    handle to radiobutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of radiobutton1
-global rad3
-if (get(hObject,'Value') == get(hObject,'Max'))
-	rad3 = 1;
-end
-
-function radiobutton4_Callback(hObject, ~, ~)
-% hObject    handle to radiobutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of radiobutton1
-global rad4
-if (get(hObject,'Value') == get(hObject,'Max'))
-	rad4 = 1;
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
